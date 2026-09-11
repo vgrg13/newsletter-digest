@@ -1,126 +1,142 @@
-# newsletter-digest (personal)
+# newsletter-digest
 
-Personal newsletter digest for `vgarg13@berkeley.edu`. Reads your inbox via the Gmail API, has Claude do the analysis at zero API cost (the analyst is the routine itself), renders the HTML, and sends the digest back to you.
+Automated Gmail newsletter digest — fetches your inbox via the Gmail API, has Claude analyze and summarize the content, renders a styled HTML email, and sends it back to you. No Anthropic API costs, no third-party services.
 
-Runs as a scheduled remote agent on claude.ai — **no Anthropic API tokens, no GitHub Actions, no Mac uptime requirement**.
-
----
-
-## Files
-
-| File | What it is |
-|---|---|
-| `digest.py` | Fetch + filter + send. `fetch` mode outputs newsletter JSON; `send` mode renders + emails. |
-| `renderer.py` | Pure-Python HTML renderer. Matches `sample_daily.html` / `sample_weekly.html` visually. |
-| `get_refresh_token.py` | One-time local script to mint your Gmail OAuth refresh token. |
-| `daily_prompt.md` | The instructions the daily routine executes at 7 AM ET. |
-| `weekly_prompt.md` | The instructions the Sunday routine executes at 5 PM ET. |
-| `requirements.txt` | Python deps (`beautifulsoup4`, `lxml`, google-auth-oauthlib). |
-| `secrets.env.example` | Template for your local secrets file. |
-| `sample_daily.html` / `sample_weekly.html` | Reference visuals for the renderer. |
+- **Daily digest** — sent once per day (fires at 8, 10, 12, 2, and 4 PM local time; first successful send wins)
+- **Weekly digest** — sent every Sunday at 5 PM, covering the full week
 
 ---
 
-## Setup — one-time, ~10 minutes
+## How it works
 
-### 1. Get a Gmail refresh token
+1. A Claude Code scheduled task wakes up on a cron schedule
+2. It runs `digest.py` to fetch newsletters from your Gmail inbox via OAuth (no IMAP)
+3. Claude reads the content, identifies top stories and themes, and writes a structured JSON analysis
+4. `renderer.py` turns the analysis into a styled HTML email
+5. The email is sent back to you via the Gmail API
+
+Claude is the analyst — there are no separate API calls or costs beyond your existing Claude plan.
+
+---
+
+## Setup
+
+### 1. Clone and install dependencies
 
 ```bash
-cd ~/Desktop/Newsletter_v2
+git clone https://github.com/vgrg13/newsletter-digest.git
+cd newsletter-digest
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
+```
+
+### 2. Create a Gmail OAuth app
+
+You need a Google Cloud project with a Gmail API OAuth client. This takes about 10 minutes:
+
+1. Go to [console.cloud.google.com](https://console.cloud.google.com) and create a new project
+2. Enable the **Gmail API** (APIs & Services → Enable APIs → search "Gmail API")
+3. Go to **APIs & Services → Credentials → Create Credentials → OAuth client ID**
+4. Choose **Desktop app**, give it a name, click Create
+5. Download the JSON or note your **Client ID** and **Client Secret**
+
+> If you're using a Google Workspace account (e.g. a university email) and Google blocks creating an OAuth app, create the Cloud project under a personal `@gmail.com` account instead. You'll still authenticate your real mailbox at the consent screen — the OAuth client just identifies the app, not the mailbox.
+
+### 3. Get a refresh token
+
+```bash
 python get_refresh_token.py
 ```
 
-The script prints step-by-step Google Cloud Console instructions, opens your browser for OAuth, and gives you three values. Paste them into `secrets.env` (copy from `secrets.env.example` first).
+Follow the prompts. The script opens your browser for the OAuth consent screen and prints your refresh token.
 
-**Berkeley note:** if Google blocks creating an External OAuth app under your `@berkeley.edu` account, run the Google Cloud Console steps from a personal `@gmail.com` account. You'll still authenticate `vgarg13@berkeley.edu` at the consent screen — the OAuth client just identifies the *app*, not the *mailbox*.
-
-### 2. Verify locally
-
-Confirm the pipeline works end-to-end before wiring up the scheduled routine:
+### 4. Create `secrets.env`
 
 ```bash
-# Load your secrets into the shell
-set -a; source secrets.env; set +a
-
-# Pull last 24h of newsletters into a JSON file
-python digest.py fetch --since-hours 24 > /tmp/newsletters.json
-cat /tmp/newsletters.json | python -m json.tool | head -40
-
-# Manually write a tiny analysis.json by hand (or use the fixture in renderer.py)
-python3 renderer.py        # emits preview_daily.html + preview_weekly.html
-
-# Or do a full dry-run send (renders to out.html, doesn't send)
-echo '{"big_picture":"test","top_stories":[],"also_today":[],"stats":{"newsletters_count":0,"key_points_count":0}}' > /tmp/a.json
-python digest.py send --kind daily --analysis-json /tmp/a.json --dry-run
-open out.html
+cp secrets.env.example secrets.env
 ```
 
-Open `out.html` (or `preview_daily.html`) in your browser. Should look like `sample_daily.html`.
+Fill in the four values:
 
-### 3. Wire up the routines (BLOCKED — see Status)
+```
+GMAIL_CLIENT_ID="your-client-id.apps.googleusercontent.com"
+GMAIL_CLIENT_SECRET="your-client-secret"
+GMAIL_REFRESH_TOKEN="1//0g..."
+GMAIL_ADDRESS="you@gmail.com"
+```
 
-When claude.ai's remote-trigger system is back online:
+`secrets.env` is gitignored — never commit it.
 
-1. Create two routines on claude.ai (one daily 7am ET, one Sunday 5pm ET).
-2. Paste the contents of `daily_prompt.md` into the first routine's prompt.
-3. Paste `weekly_prompt.md` into the second.
-4. Inject your env vars (`GMAIL_CLIENT_ID`, `GMAIL_CLIENT_SECRET`, `GMAIL_REFRESH_TOKEN`, `GMAIL_ADDRESS`) into both routines.
-5. Decide how the routines access `digest.py` + `renderer.py` (see DEPLOYMENT NOTES below).
-6. Fire each routine manually once to confirm the email arrives.
+### 5. Test locally
 
----
+```bash
+source .venv/bin/activate
+set -a; source secrets.env; set +a
 
-## Status
+# Fetch last 24 hours of newsletters
+python3 -c "
+import sys, json, os
+os.chdir('.')
+sys.path.insert(0, '.')
+import digest
+newsletters = digest.fetch(since_hours=24, max_msgs=50)
+print(f'Fetched {len(newsletters)} newsletters')
+for n in newsletters:
+    print(f'  {n[\"source\"]:30s} | {n[\"subject\"][:60]}')
+"
+```
 
-| Component | Status |
-|---|---|
-| Renderer | ✅ Done, verified |
-| Fetch + filter (Layer 2 heuristics) | ✅ Done |
-| OAuth helper | ✅ Done |
-| Send via Gmail API | ✅ Done (untested live) |
-| Daily prompt | ✅ Done |
-| Weekly prompt | ✅ Done |
-| Scheduled routine wiring | ⏸ Blocked — claude.ai remote-trigger system temporarily unreachable |
+### 6. Wire up scheduled tasks
 
-When remote triggers come back online, the only remaining work is wiring the two routines on claude.ai and firing one test run.
+This project uses **Claude Code scheduled tasks** (requires Claude Code desktop app).
 
----
+Create two task files:
 
-## DEPLOYMENT NOTES — getting `digest.py` and `renderer.py` to the routine
+**Daily** — `~/.claude/scheduled-tasks/newsletter-daily-digest/SKILL.md`
+Set cron to `0 8,10,12,14,16 * * *`
 
-The routine runs on Anthropic's infrastructure, not your Mac. It can't read files from `~/Desktop/Newsletter_v2/`. Three options:
+**Weekly** — `~/.claude/scheduled-tasks/newsletter-weekly-digest/SKILL.md`
+Set cron to `0 17 * * 0`
 
-**Option A — Embed in prompt (simplest, self-contained)**
-
-Prepend a heredoc block to each routine prompt that writes `digest.py` and `renderer.py` to `/tmp/` before running. Routine becomes ~25 KB, but no external dependencies.
-
-**Option B — Public GitHub repo (cleanest for ongoing iteration)**
-
-Push this directory to a public repo. Add a `git clone` step to each routine prompt. No secrets are in the repo (they live in routine env vars).
-
-**Option C — Single GitHub Gist**
-
-Put `digest.py` + `renderer.py` in one Gist (public). Each routine `curl`s the raw URLs. 5 min of setup, easy to update.
-
-Pick whichever you prefer when we wire up the routines. I'd lean toward **B** if you might tweak the analysis voice over time, **A** if you want pure "set it and forget it."
+See the SKILL.md files in this repo for the full task instructions. The Claude Code app must be open at the scheduled time for tasks to fire (missed fires are skipped, not retried — the multi-fire daily schedule compensates for this).
 
 ---
 
-## Costs
+## Project structure
 
-- **Anthropic API:** $0 (Claude IS the routine — no separate API calls).
-- **Gmail API:** free under your daily quota.
-- **claude.ai routine runs:** included in your existing claude.ai plan.
+```
+digest.py          # Gmail fetch, OAuth, newsletter classification, send
+renderer.py        # HTML email renderer (daily + weekly templates)
+get_refresh_token.py  # One-time OAuth setup helper
+requirements.txt
+secrets.env.example
+output/            # Gitignored — runtime artifacts (analysis JSON, sentinel files)
+samples/           # Reference HTML for the renderer
+```
 
-Total ongoing cost: $0.
+---
+
+## Newsletter classification
+
+Newsletters are filtered through four layers:
+
+1. **Allowlist** — known senders always included (configured in `digest.py`)
+2. **Header heuristics** — checks `List-Unsubscribe`, `List-Id`, `Precedence`
+3. **Claude tiebreaker** — Claude reads ambiguous content and decides
+4. **Blocklist** — known noise senders always excluded
+
+---
+
+## Cost
+
+- **Anthropic API:** $0 — Claude runs as the scheduled task itself, no separate API calls
+- **Gmail API:** free (well within daily quota)
+- **Claude Code:** included in your existing plan
 
 ---
 
 ## Privacy
 
-- Your Gmail inbox content is read by the routine.
-- Sender addresses, subjects, and body text pass through claude.ai during the run.
-- Nothing is persisted by us — `secrets.env` stays local, the routine writes only to its ephemeral filesystem.
-- `secrets.env` is gitignored; don't commit it if you ever push this directory anywhere.
+- Your Gmail inbox content is read locally by `digest.py` and passed to Claude during the scheduled task run
+- `secrets.env` stays local and is gitignored
+- Nothing is stored externally
