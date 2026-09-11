@@ -59,13 +59,13 @@ STEP 3 — Configure the OAuth consent screen
   1. Left sidebar → "APIs & Services" → "OAuth consent screen"
   2. User type → "External" → "Create"
   3. App name: newsletter-digest
-     User support email: vgarg13@berkeley.edu
-     Developer contact email: vgarg13@berkeley.edu
+     User support email: your@email.com
+     Developer contact email: your@email.com
      → "Save and Continue"
   4. Scopes page → "Save and Continue" (we'll request scopes at runtime; no
      need to pre-declare here unless Google nags you. If it does, add
      /auth/gmail.readonly and /auth/gmail.send.)
-  5. Test users → "+ Add Users" → vgarg13@berkeley.edu → "Save and Continue"
+  5. Test users → "+ Add Users" → your@email.com → "Save and Continue"
   6. Summary page → "Back to Dashboard"
 
 STEP 4 — Create the OAuth client
@@ -79,7 +79,7 @@ STEP 4 — Create the OAuth client
 
   BERKELEY NOTE: if Google blocks creating External OAuth apps under your
   @berkeley.edu account, run this whole flow using a personal @gmail.com
-  Google Cloud account instead — you'll still authenticate vgarg13@berkeley.edu
+  Google Cloud account instead — you'll still authenticate your@email.com
   at the consent step. The Client ID/Secret just identify the *app*, not the
   *account* whose mail you're reading.
 
@@ -108,7 +108,7 @@ def main() -> None:
     }
 
     print(
-        "\nOpening your browser to authorize. Sign in as vgarg13@berkeley.edu\n"
+        "\nOpening your browser to authorize. Sign in as your@email.com\n"
         "when prompted. You'll see a 'Google hasn't verified this app' warning\n"
         "— click 'Advanced' → 'Go to newsletter-digest (unsafe)' to continue.\n"
         "This is expected for an unverified personal-use app.\n"
@@ -141,7 +141,7 @@ def main() -> None:
             GMAIL_CLIENT_SECRET="{client_secret}"
             GMAIL_REFRESH_TOKEN="{creds.refresh_token}"
 
-            (Also keep GMAIL_ADDRESS="vgarg13@berkeley.edu" in secrets.env.)
+            (Also keep GMAIL_ADDRESS="your@email.com" in secrets.env.)
 
             Keep these values private — anyone with all three can read and send
             mail as you. secrets.env is gitignored already.

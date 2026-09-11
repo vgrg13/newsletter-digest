@@ -90,28 +90,43 @@ for n in newsletters:
 
 This project uses **Claude Code scheduled tasks** (requires Claude Code desktop app).
 
-Create two task files:
+1. Copy the template SKILL.md files to the Claude Code tasks directory:
 
-**Daily** — `~/.claude/scheduled-tasks/newsletter-daily-digest/SKILL.md`
-Set cron to `0 8,10,12,14,16 * * *`
+```bash
+mkdir -p ~/.claude/scheduled-tasks/newsletter-daily-digest
+mkdir -p ~/.claude/scheduled-tasks/newsletter-weekly-digest
+cp scheduled-tasks/daily/SKILL.md ~/.claude/scheduled-tasks/newsletter-daily-digest/SKILL.md
+cp scheduled-tasks/weekly/SKILL.md ~/.claude/scheduled-tasks/newsletter-weekly-digest/SKILL.md
+```
 
-**Weekly** — `~/.claude/scheduled-tasks/newsletter-weekly-digest/SKILL.md`
-Set cron to `0 17 * * 0`
+2. In each copied file, replace every occurrence of `YOUR_PROJECT_PATH` with the absolute path to your repo (e.g. `/Users/yourname/newsletter-digest`).
 
-See the SKILL.md files in this repo for the full task instructions. The Claude Code app must be open at the scheduled time for tasks to fire (missed fires are skipped, not retried — the multi-fire daily schedule compensates for this).
+3. Set the cron schedules in Claude Code:
+   - Daily: `0 8,10,12,14,16 * * *` (fires 5× per day; the sentinel prevents double-sends)
+   - Weekly: `0 17 * * 0` (Sundays at 5 PM local time)
+
+The Claude Code app must be open at the scheduled time for tasks to fire. Missed fires are skipped, not retried — the multi-fire daily schedule compensates for this.
 
 ---
 
 ## Project structure
 
 ```
-digest.py          # Gmail fetch, OAuth, newsletter classification, send
-renderer.py        # HTML email renderer (daily + weekly templates)
-get_refresh_token.py  # One-time OAuth setup helper
+digest.py                        # Gmail fetch, OAuth, newsletter classification, send
+renderer.py                      # HTML email renderer (daily + weekly templates)
 requirements.txt
-secrets.env.example
-output/            # Gitignored — runtime artifacts (analysis JSON, sentinel files)
-samples/           # Reference HTML for the renderer
+secrets.env.example              # Template — copy to secrets.env and fill in your values
+data/
+  senders_allowlist.txt          # Senders always included (edit to match your subscriptions)
+  senders_blocklist.txt          # Senders always excluded (add your own noise)
+scheduled-tasks/
+  daily/SKILL.md                 # Claude Code scheduled task for the daily digest
+  weekly/SKILL.md                # Claude Code scheduled task for the weekly digest
+setup/
+  get_refresh_token.py           # One-time helper to mint your Gmail OAuth refresh token
+  _oauth_run.py                  # Alternative OAuth runner if you have the JSON file
+samples/                         # Reference HTML showing what the digest looks like
+output/                          # Gitignored — runtime artifacts (JSON analysis, sentinel files)
 ```
 
 ---

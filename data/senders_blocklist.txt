@@ -1,32 +1,26 @@
 # Senders blocklist — always excluded regardless of headers.
 # Lines starting with # are comments.
+# Add any sender you never want in your digest, one address per line.
 
-# ── Apollo.io (sales tool, not a newsletter) ──────────────────────────
+# ── Sales / outreach tools ────────────────────────────────────────────
 support@apollo.io
 hello@mail.apollo.io
 
-# ── Job / recruiting platforms ────────────────────────────────────────
-handshake@mail.joinhandshake.com
-recruiting@insightpartners.com
-info@bb3.wayup.com
-ace@email.numerade.com
-
-# ── Berkeley institutional emails ─────────────────────────────────────
-communications@berkeley.edu
-ucberkeley@warnme.berkeley.edu
-relay@relay.engage.campuslabs.com
-undergrd@lists.haas.berkeley.edu
-enroll@uconline.edu
-
-# ── Housing / misc ────────────────────────────────────────────────────
-info@emp.apartmentlist.com
-sm8599@email.bncollege.com
-no-reply@p.simplywall.st
+# ── Platform notifications (not newsletters) ──────────────────────────
 product@engage.canva.com
 ratings@spglobal.com
+no-reply@p.simplywall.st
 
-# ── Removed as redundant / not intentional ────────────────────────────
+# ── Seeking Alpha transactional ───────────────────────────────────────
 subscriptions@seekingalpha.com   # duplicate of account@seekingalpha.com
-claudedesktop@substack.com       # not an intentional news subscription
-myft@news-alerts.ft.com          # breaking news alerts, not curated analysis
-no-reply@substack.com            # Substack platform notifications (live videos, "X is now on Substack"), not newsletters
+
+# ── Substack platform noise ───────────────────────────────────────────
+no-reply@substack.com            # platform notifications, not newsletters
+
+# ── FT breaking-news alerts (not curated analysis) ────────────────────
+myft@news-alerts.ft.com
+
+# ── Add your own ──────────────────────────────────────────────────────
+# institutional@yourschool.edu
+# recruiting@platform.com
+# etc.

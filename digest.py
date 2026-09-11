@@ -25,14 +25,18 @@ ALLOWLIST = {
     "valueinvesting+investing@substack.com",
 }
 BLOCKLIST = {
-    "support@apollo.io","hello@mail.apollo.io","handshake@mail.joinhandshake.com",
-    "recruiting@insightpartners.com","info@bb3.wayup.com","ace@email.numerade.com",
-    "communications@berkeley.edu","ucberkeley@warnme.berkeley.edu",
-    "relay@relay.engage.campuslabs.com","undergrd@lists.haas.berkeley.edu",
-    "enroll@uconline.edu","info@emp.apartmentlist.com","sm8599@email.bncollege.com",
-    "no-reply@p.simplywall.st","product@engage.canva.com","ratings@spglobal.com",
-    "subscriptions@seekingalpha.com","claudedesktop@substack.com",
-    "myft@news-alerts.ft.com","no-reply@substack.com",
+    # Sales / outreach tools
+    "support@apollo.io","hello@mail.apollo.io",
+    # Platform notifications (not newsletters)
+    "product@engage.canva.com","ratings@spglobal.com",
+    "no-reply@p.simplywall.st",
+    # Seeking Alpha transactional (keep account@, drop subscriptions@)
+    "subscriptions@seekingalpha.com",
+    # Substack platform noise (not curated newsletters)
+    "claudedesktop@substack.com","no-reply@substack.com",
+    # FT breaking-news alerts (not curated analysis)
+    "myft@news-alerts.ft.com",
+    # Add your own: institutional emails, recruiting platforms, housing spam, etc.
 }
 COMMERCIAL_RE = re.compile(r"order (confirmation|shipped|delivered)|your receipt|\$\d+ off|% off|flash sale|last chance|expires (today|soon)|verify your|reset your password|sign[- ]?in attempt|welcome to|invoice|payment (received|due|failed)|tracking|your (order|package|delivery)", re.IGNORECASE)
 LINK_BLOCK = ["unsubscribe","utm_","email_click","mailtrack","list-manage","mailchi.mp","click.convertkit","track.customer.io","sendgrid.net/ls/click"]
