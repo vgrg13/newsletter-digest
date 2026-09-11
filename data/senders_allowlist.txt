@@ -1,0 +1,83 @@
+# Senders allowlist — Layer 1 of the newsletter filter.
+# Any sender listed here is ALWAYS included, no further header checks.
+# Case-insensitive exact match on the From address.
+# Lines starting with # are comments.
+#
+# To add a new sender: paste the From address on its own line.
+# To remove one: delete the line or comment it out with #.
+
+# ── Financial Times ──────────────────────────────────────────────────
+ft@newsletters.ft.com
+myft@news-alerts.ft.com
+ftav@substack.com
+
+# ── Wall Street Journal ───────────────────────────────────────────────
+access@interactive.wsj.com
+
+# ── Bloomberg ────────────────────────────────────────────────────────
+noreply@news.bloomberg.com
+
+# ── Washington Post ───────────────────────────────────────────────────
+info@nl.mail.washingtonpost.com
+
+# ── New York Times ────────────────────────────────────────────────────
+nytimes@e.newyorktimes.com
+
+# ── Axios ─────────────────────────────────────────────────────────────
+dan@axios.com
+# csuite@axios.com  ← removed: heavy overlap with Pro Rata
+
+# ── TechCrunch ────────────────────────────────────────────────────────
+newsletters@techcrunch.com
+
+# ── TLDR ─────────────────────────────────────────────────────────────
+dan@tldrnewsletter.com
+
+# ── Morgan Stanley ────────────────────────────────────────────────────
+ourideas@morganstanley.com
+
+# ── StrictlyVC ────────────────────────────────────────────────────────
+connie@strictlyvc.com
+
+# ── Clouded Judgment / Jamin Ball ─────────────────────────────────────
+cloudedjudgement@substack.com
+
+# ── a16z ──────────────────────────────────────────────────────────────
+a16z@substack.com
+
+# ── Seeking Alpha ─────────────────────────────────────────────────────
+account@seekingalpha.com
+# subscriptions@seekingalpha.com  ← removed: duplicate of account@
+
+# ── Other newsletters confirmed in your inbox ─────────────────────────
+finstoryai@substack.com
+valueinvesting+stocks-paid@substack.com
+capitalflows@substack.com
+michaeljburry@substack.com
+aswathdamodaran@substack.com
+thewallstreetskinny@substack.com
+reidhoffman@substack.com
+raydalio@substack.com
+stealthstartupspy@substack.com
+technically@substack.com
+on+open-tab@substack.com
+on+product@substack.com
+on+stories@substack.com
+vchappens+roundbrief-brief-interview-on-vc@substack.com
+capitalflows+interest-rate-and-fx-strategy@substack.com
+capitalflows+equity-strategy@substack.com
+peinsights@substack.com
+companylaunchtracker@substack.com
+theeconomistoffthecharts@substack.com
+yadavrohit@substack.com
+entrepreneursforimpact@substack.com
+paulinaszyzdek@substack.com
+stephmui@substack.com
+understandingai@substack.com
+20vc@substack.com
+privatecreditconnect@substack.com
+post+the-weekender@substack.com
+valueinvesting+investing@substack.com
+# claudedesktop@substack.com  ← removed: not an intentional subscription
+# no-reply@substack.com  ← removed: catch-all, could pull random Substacks
+# myft@news-alerts.ft.com  ← removed: breaking alerts, not curated analysis

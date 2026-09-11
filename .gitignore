@@ -1,0 +1,23 @@
+# Never commit credentials
+secrets.env
+credentials.json
+token.json
+client_secret*.json
+*.local.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Output / preview (generated run artifacts)
+output/
+newsletters.json
+samples/dryrun_*.html
+samples/preview_*.html
+out.html
+*.local.html
+
+# OS
+.DS_Store

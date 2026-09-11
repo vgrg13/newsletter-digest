@@ -1,0 +1,32 @@
+# Senders blocklist — always excluded regardless of headers.
+# Lines starting with # are comments.
+
+# ── Apollo.io (sales tool, not a newsletter) ──────────────────────────
+support@apollo.io
+hello@mail.apollo.io
+
+# ── Job / recruiting platforms ────────────────────────────────────────
+handshake@mail.joinhandshake.com
+recruiting@insightpartners.com
+info@bb3.wayup.com
+ace@email.numerade.com
+
+# ── Berkeley institutional emails ─────────────────────────────────────
+communications@berkeley.edu
+ucberkeley@warnme.berkeley.edu
+relay@relay.engage.campuslabs.com
+undergrd@lists.haas.berkeley.edu
+enroll@uconline.edu
+
+# ── Housing / misc ────────────────────────────────────────────────────
+info@emp.apartmentlist.com
+sm8599@email.bncollege.com
+no-reply@p.simplywall.st
+product@engage.canva.com
+ratings@spglobal.com
+
+# ── Removed as redundant / not intentional ────────────────────────────
+subscriptions@seekingalpha.com   # duplicate of account@seekingalpha.com
+claudedesktop@substack.com       # not an intentional news subscription
+myft@news-alerts.ft.com          # breaking news alerts, not curated analysis
+no-reply@substack.com            # Substack platform notifications (live videos, "X is now on Substack"), not newsletters
