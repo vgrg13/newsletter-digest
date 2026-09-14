@@ -1,12 +1,13 @@
 ---
 name: newsletter-weekly-digest
-description: Weekly newsletter digest — fetches last 7 days, analyzes themes, emails every Sunday
+description: Weekly newsletter digest — fetches last 7 days, analyzes themes, emails every Sunday at 5 PM
 ---
 
 # Before using this file
 # Replace YOUR_PROJECT_PATH with the absolute path to your cloned repo.
 # Place this file at: ~/.claude/scheduled-tasks/newsletter-weekly-digest/SKILL.md
 # Set cron to: 0 17 * * 0  (Sundays at 5 PM local time)
+# Pair with the daily task (scheduled-tasks/daily/SKILL.md) set to Mon–Sat only
 
 You are a scheduled agent delivering a weekly newsletter digest. Complete every step in order without pausing for confirmation. If any step fails, jump to the Error handling section — do NOT stop silently.
 

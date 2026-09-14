@@ -2,7 +2,7 @@
 
 Automated Gmail newsletter digest — fetches your inbox via the Gmail API, has Claude analyze and summarize the content, renders a styled HTML email, and sends it back to you. No Anthropic API costs, no third-party services.
 
-- **Daily digest** — sent once per day (fires at 8, 10, 12, 2, and 4 PM local time; first successful send wins)
+- **Daily digest** — sent once per day Monday–Saturday (fires at 8, 10, 12, 2, and 4 PM local time; first successful send wins)
 - **Weekly digest** — sent every Sunday at 5 PM, covering the full week
 
 ---
@@ -102,7 +102,7 @@ cp scheduled-tasks/weekly/SKILL.md ~/.claude/scheduled-tasks/newsletter-weekly-d
 2. In each copied file, replace every occurrence of `YOUR_PROJECT_PATH` with the absolute path to your repo (e.g. `/Users/yourname/newsletter-digest`).
 
 3. Set the cron schedules in Claude Code:
-   - Daily: `0 8,10,12,14,16 * * *` (fires 5× per day; the sentinel prevents double-sends)
+   - Daily: `0 8,10,12,14,16 * * 1-6` (Mon–Sat, fires 5× per day; sentinel prevents double-sends)
    - Weekly: `0 17 * * 0` (Sundays at 5 PM local time)
 
 The Claude Code app must be open at the scheduled time for tasks to fire. Missed fires are skipped, not retried — the multi-fire daily schedule compensates for this.

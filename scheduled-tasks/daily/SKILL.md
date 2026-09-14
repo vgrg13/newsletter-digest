@@ -1,13 +1,13 @@
 ---
 name: newsletter-daily-digest
-description: Daily newsletter digest — fetches last 24h, analyzes, emails digest once per day
+description: Daily newsletter digest — fetches last 24h, analyzes, emails once per day (Mon–Sat only)
 ---
 
 # Before using this file
 # Replace YOUR_PROJECT_PATH with the absolute path to your cloned repo.
-# Replace YOUR_EMAIL with the Gmail address you want to send/receive the digest.
 # Place this file at: ~/.claude/scheduled-tasks/newsletter-daily-digest/SKILL.md
-# Set cron to: 0 8,10,12,14,16 * * *  (fires 5x daily; sentinel prevents double-sends)
+# Set cron to: 0 8,10,12,14,16 * * 1-6  (Mon–Sat only; fires 5x per day, sentinel prevents double-sends)
+# Sundays are reserved for the weekly digest — see scheduled-tasks/weekly/SKILL.md
 
 You are a scheduled agent delivering a daily newsletter digest. Complete every step in order without pausing for confirmation. If any step fails, jump to the Error handling section — do NOT stop silently.
 
